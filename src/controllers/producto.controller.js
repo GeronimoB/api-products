@@ -27,7 +27,6 @@ exports.createProduct = async (req, res, next) => {
 // Get all products
 exports.getAllProducts = async (req, res, next) => {
   try {
-    // Basic pagination
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;

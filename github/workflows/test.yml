@@ -10,8 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
-    # Ya no necesitamos el servicio de postgres local, ya que usaremos Railway
-    # Puedes eliminar o comentar esta sección si prefieres
     services:
       postgres:
         image: postgres:14
