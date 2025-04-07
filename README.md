@@ -8,7 +8,8 @@ Esta es una API REST desarrollada en Node.js con Express y PostgreSQL que permit
 - **Base de datos**: PostgreSQL con Sequelize ORM.
 - **Validaciones**: Implementadas con express-validator.
 - **Manejo de errores**: Middleware personalizado para gestión de errores.
-- **Pruebas**: Test unitarios con Jest y Supertest.
+- **Pruebas automatizadas**: Test unitarios con Jest y Supertest.
+- **Integración continua**: Configuración de GitHub Actions para ejecutar pruebas automáticamente.
 - **Documentación**: Endpoints y estructura documentados.
 
 ## Requisitos previos
@@ -21,6 +22,8 @@ Esta es una API REST desarrollada en Node.js con Express y PostgreSQL que permit
 
 ```
 productos-api/
+├── .github/               # Configuración de GitHub Actions
+│   └── workflows/         # Flujos de trabajo para CI
 ├── src/
 │   ├── config/           # Configuración de la base de datos
 │   ├── controllers/      # Controladores 
@@ -34,6 +37,7 @@ productos-api/
 ├── .env                  # Variables de entorno (no versionado)
 ├── .env.example          # Ejemplo de variables de entorno
 ├── .gitignore            # Archivos a ignorar por Git
+├── jest.config.js        # Configuración de Jest
 ├── package.json          # Dependencias y scripts
 └── README.md             # Documentación del proyecto
 ```
@@ -57,12 +61,18 @@ productos-api/
    ```
    Edita el archivo `.env` con tus configuraciones.
 
-4. Crear la base de datos:
+4. Crea la base de datos en PostgreSQL con la siguiente estructura:
    ```bash
-   createdb productos_db
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  available_quantity INTEGER NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
    ```
-   O crea la base de datos manualmente con PostgreSQL.
-
 5. Iniciar el servidor:
    ```bash
    npm run dev
@@ -74,9 +84,9 @@ productos-api/
 
 | Método | URL | Descripción |
 |--------|-----|-------------|
+| POST | /api/productos | Crear un nuevo producto |
 | GET | /api/productos | Obtener todos los productos |
 | GET | /api/productos/:id | Obtener un producto por ID |
-| POST | /api/productos | Crear un nuevo producto |
 | PUT | /api/productos/:id | Actualizar un producto existente |
 | DELETE | /api/productos/:id | Eliminar un producto |
 
@@ -88,10 +98,10 @@ productos-api/
 curl -X POST http://localhost:3000/api/productos \
   -H "Content-Type: application/json" \
   -d '{
-    "nombre": "Smartphone XYZ",
-    "descripcion": "Smartphone de última generación con excelentes características",
-    "precio": 599.99,
-    "cantidad_disponible": 50
+    "name": "Smartphone XYZ",
+    "description": "High-end smartphone with excellent features",
+    "price": 599.99,
+    "available_quantity": 50
   }'
 ```
 
@@ -113,8 +123,8 @@ curl -X GET http://localhost:3000/api/productos/1
 curl -X PUT http://localhost:3000/api/productos/1 \
   -H "Content-Type: application/json" \
   -d '{
-    "precio": 549.99,
-    "cantidad_disponible": 45
+    "price": 549.99,
+    "available_quantity": 45
   }'
 ```
 
@@ -127,24 +137,26 @@ curl -X DELETE http://localhost:3000/api/productos/1
 ## Ejecutar pruebas
 
 ```bash
+# Para sistemas Unix/Linux/macOS:
 npm test
+
+# Para sistemas Windows:
+npm run test:windows
 ```
+
+### Integración continua
+
+Este proyecto está configurado con GitHub Actions para ejecutar pruebas automáticamente en cada push o pull request a las ramas main/master. Puedes ver los resultados en la pestaña "Actions" del repositorio.
 
 ## Validaciones
 
-- **nombre**: String, requerido, entre 3 y 100 caracteres.
-- **descripcion**: String, requerido, mínimo 10 caracteres.
-- **precio**: Número, requerido, valor positivo.
-- **cantidad_disponible**: Entero, requerido, valor positivo.
+- **name**: String, requerido, entre 3 y 100 caracteres.
+- **description**: String, requerido, mínimo 10 caracteres.
+- **price**: Número, requerido, valor positivo.
+- **available_quantity**: Entero, requerido, valor positivo.
 
-## Mejoras futuras
+## Seguridad
 
-- Implementación de autenticación y autorización
-- Documentación de API con Swagger
-- Implementación de caché para optimizar consultas frecuentes
-- Dockerización de la aplicación
-- CI/CD para pruebas automáticas y despliegue
-
-## Licencia
-
-Este proyecto está bajo la Licencia ISC.
+- Middleware de error con registro seguro (sin exponer stack traces o rutas internas)
+- Respuestas de error estructuradas y consistentes
+- Validación estricta de entrada de datos
