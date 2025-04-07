@@ -4,23 +4,23 @@ const { sequelize, testConnection } = require('./config/database');
 
 const PORT = process.env.PORT || 3000;
 
-// Sincronizar la base de datos y luego iniciar el servidor
+// Sync the database and then start the server
 const startServer = async () => {
   try {
-    // Testear la conexión a la base de datos
+    // Test the database connection
     await testConnection();
     
-    // Sincronizar modelos con la base de datos
-    // En producción, se debería usar Sequelize migrations en lugar de sync
+    // Sync models with the database
+    // In production, Sequelize migrations should be used instead of sync
     await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
     
-    // Iniciar el servidor
+    // Start the server
     app.listen(PORT, () => {
-      console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-      console.log(`API disponible en: http://localhost:${PORT}/api/productos`);
+      console.log(`Server running on port ${PORT}`);
+      console.log(`API available at: http://localhost:${PORT}/api/productos`);
     });
   } catch (error) {
-    console.error('Error al iniciar el servidor:', error);
+    console.error('Error starting the server:', error);
     process.exit(1);
   }
 };

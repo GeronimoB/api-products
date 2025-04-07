@@ -3,33 +3,33 @@ const cors = require('cors');
 const productoRoutes = require('./routes/producto.routes');
 const { errorHandler, notFoundHandler } = require('./middleware/error.middleware');
 
-// Inicialización de la aplicación Express
+// Initialize the Express application
 const app = express();
 
-// Middleware para CORS
+// Middleware for CORS
 app.use(cors());
 
-// Middleware para parsear JSON
+// Middleware to parse JSON
 app.use(express.json());
 
-// Middleware para parsear datos de formularios
+// Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
 
-// Ruta básica para comprobar que la API está funcionando
+// Basic route to verify the API is working
 app.get('/', (req, res) => {
   res.status(200).json({
     status: 'success',
-    message: 'API REST de productos funcionando correctamente'
+    message: 'Products REST API is running correctly'
   });
 });
 
-// Rutas de la API
+// API routes
 app.use('/api/productos', productoRoutes);
 
-// Middleware para manejar rutas no encontradas
+// Middleware to handle not found routes
 app.use(notFoundHandler);
 
-// Middleware para manejar errores
+// Middleware to handle errors
 app.use(errorHandler);
 
 module.exports = app;
