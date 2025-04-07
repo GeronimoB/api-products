@@ -10,8 +10,6 @@ const startServer = async () => {
     // Test the database connection
     await testConnection();
     
-    // Sync models with the database
-    // In production, Sequelize migrations should be used instead of sync
     await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
     
     // Start the server

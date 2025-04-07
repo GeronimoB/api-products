@@ -15,7 +15,6 @@ const validateRequest = (req, res, next) => {
 
 // Middleware to handle general errors
 const errorHandler = (err, req, res, next) => {
-  // Log only essential information without sensitive details
   const errorInfo = {
     message: err.message,
     type: err.name || 'Error',
