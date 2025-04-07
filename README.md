@@ -63,15 +63,15 @@ productos-api/
 
 4. Crea la base de datos en PostgreSQL con la siguiente estructura:
    ```bash
-CREATE TABLE products (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
-  price NUMERIC(10,2) NOT NULL,
-  available_quantity INTEGER NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE,
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL
-);
+   `CREATE TABLE products (
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(255) NOT NULL,
+   description TEXT NOT NULL,
+   price NUMERIC(10,2) NOT NULL,
+   available_quantity INTEGER NOT NULL,
+   created_at TIMESTAMP WITH TIME ZONE,
+   updated_at TIMESTAMP WITH TIME ZONE NOT NULL
+   );`
    ```
 5. Iniciar el servidor:
    ```bash
