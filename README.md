@@ -36,7 +36,7 @@ productos-api/
 │   ├── app.js            # Configuración de Express
 │   └── server.js         # Punto de entrada
 ├── tests/                # Pruebas unitarias
-├── .env                  # Variables de entorno (no versionado)
+├── .env                  # Variables de entorno
 ├── .env.example          # Ejemplo de variables de entorno
 ├── .gitignore            # Archivos a ignorar por Git
 ├── jest.config.js        # Configuración de Jest
