@@ -1,7 +1,7 @@
 const { ValidationError } = require('sequelize');
 const { validationResult } = require('express-validator');
 
-// Middleware para verificar los resultados de express-validator
+// Middleware to check the results of express-validator
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -13,15 +13,24 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Middleware para manejar errores generales
+// Middleware to handle general errors
 const errorHandler = (err, req, res, next) => {
-  console.error('Error:', err);
+  // Log only essential information without sensitive details
+  const errorInfo = {
+    message: err.message,
+    type: err.name || 'Error',
+    path: req.path,
+    method: req.method,
+    statusCode: err.statusCode || 500
+  };
+  
+  console.error('Error:', errorInfo);
 
-  // Errores específicos de Sequelize
+  // Specific Sequelize validation errors
   if (err instanceof ValidationError) {
     return res.status(400).json({
       status: 'error',
-      message: 'Error de validación',
+      message: 'Validation error',
       errors: err.errors.map(e => ({
         field: e.path,
         message: e.message
@@ -29,7 +38,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error personalizado con código de estado
+  // Custom error with status code
   if (err.statusCode) {
     return res.status(err.statusCode).json({
       status: 'error',
@@ -37,18 +46,18 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error por defecto (500 - Error interno del servidor)
+  // Default error (500 - Internal server error)
   return res.status(500).json({
     status: 'error',
-    message: 'Error interno del servidor'
+    message: 'Internal server error'
   });
 };
 
-// Error para recursos no encontrados
+// Middleware for handling not found routes
 const notFoundHandler = (req, res) => {
   res.status(404).json({
     status: 'error',
-    message: `No se encontró la ruta: ${req.originalUrl}`
+    message: `Route not found: ${req.originalUrl}`
   });
 };
 

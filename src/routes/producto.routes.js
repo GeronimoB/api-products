@@ -4,7 +4,7 @@ const productoController = require('../controllers/producto.controller');
 const { validateProductCreate, validateProductUpdate, validateProductId } = require('../validators/producto.validator');
 const { validateRequest } = require('../middleware/error.middleware');
 
-// Rutas para productos
+// Routes for products
 router.post('/', validateProductCreate, validateRequest, productoController.createProduct);
 router.get('/', productoController.getAllProducts);
 router.get('/:id', validateProductId, validateRequest, productoController.getProductById);

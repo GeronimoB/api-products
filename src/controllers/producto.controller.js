@@ -1,10 +1,12 @@
 const Producto = require('../models/producto');
 
-// Crear un nuevo producto
+// Create a new product
 exports.createProduct = async (req, res, next) => {
   try {
     const { name, description, price, available_quantity } = req.body;
     
+    // Simulate a delay to pause the process
+    await new Promise(resolve => setTimeout(resolve, 2000));
     const producto = await Producto.create({
       name,
       description,
@@ -22,10 +24,10 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
-// Obtener todos los productos
+// Get all products
 exports.getAllProducts = async (req, res, next) => {
   try {
-    // Implementar paginación básica
+    // Basic pagination
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
@@ -51,7 +53,7 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
-// Obtener un producto por ID
+// Get product by ID
 exports.getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -73,7 +75,7 @@ exports.getProductById = async (req, res, next) => {
   }
 };
 
-// Actualizar un producto
+// Update a product
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -87,7 +89,7 @@ exports.updateProduct = async (req, res, next) => {
       throw error;
     }
     
-    // Actualizar solo los campos proporcionados
+    // Only update provided fields
     await producto.update({
       name: name !== undefined ? name : producto.name,
       description: description !== undefined ? description : producto.description,
@@ -105,7 +107,7 @@ exports.updateProduct = async (req, res, next) => {
   }
 };
 
-// Eliminar un producto
+// Delete a product
 exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;

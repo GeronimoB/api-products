@@ -3,53 +3,53 @@ const app = require('../src/app');
 const { sequelize } = require('../src/config/database');
 const Producto = require('../src/models/producto');
 
-// Configurar base de datos de prueba antes de ejecutar los tests
+// Set up the test database before running the tests
 beforeAll(async () => {
-  // Usar una base de datos de prueba o un esquema separado
+  // Use a separate test database or schema
   await sequelize.sync({ force: true });
 });
 
-// Limpiar la base de datos después de cada test
+// Clean the database after each test
 afterEach(async () => {
   await Producto.destroy({ where: {}, truncate: true });
 });
 
-// Cerrar conexión después de todos los tests
+// Close the connection after all tests
 afterAll(async () => {
   await sequelize.close();
 });
 
-describe('Pruebas de API de Productos', () => {
+describe('Product API Tests', () => {
   describe('POST /api/productos', () => {
-    it('Debería crear un nuevo producto', async () => {
-      const productoData = {
-        nombre: 'Producto de prueba',
-        descripcion: 'Esta es una descripción de prueba con suficiente longitud',
-        precio: 99.99,
-        cantidad_disponible: 10
+    it('Should create a new product', async () => {
+      const productData = {
+        name: 'Test Product',
+        description: 'This is a test description with sufficient length',
+        price: 99.99,
+        available_quantity: 10
       };
 
       const response = await request(app)
         .post('/api/productos')
-        .send(productoData)
+        .send(productData)
         .expect(201);
 
       expect(response.body.status).toBe('success');
       expect(response.body.data).toHaveProperty('id');
-      expect(response.body.data.nombre).toBe(productoData.nombre);
+      expect(response.body.data.name).toBe(productData.name);
     });
 
-    it('Debería retornar error 400 si los datos son inválidos', async () => {
-      const productoInvalido = {
-        nombre: 'P', // Nombre muy corto
-        descripcion: 'Corta', // Descripción muy corta
-        precio: -10, // Precio negativo
-        cantidad_disponible: 0 // Cantidad inválida
+    it('Should return a 400 error if data is invalid', async () => {
+      const invalidProduct = {
+        name: 'P', 
+        description: 'Short',
+        price: -10, 
+        available_quantity: 0 
       };
 
       const response = await request(app)
         .post('/api/productos')
-        .send(productoInvalido)
+        .send(invalidProduct)
         .expect(400);
 
       expect(response.body.status).toBe('error');
@@ -58,7 +58,7 @@ describe('Pruebas de API de Productos', () => {
   });
 
   describe('GET /api/productos', () => {
-    it('Debería obtener una lista vacía de productos', async () => {
+    it('Should get an empty list of products', async () => {
       const response = await request(app)
         .get('/api/productos')
         .expect(200);
@@ -68,13 +68,13 @@ describe('Pruebas de API de Productos', () => {
       expect(response.body.data.length).toBe(0);
     });
 
-    it('Debería obtener una lista de productos después de agregarlos', async () => {
-      // Crear un producto de prueba
+    it('Should get a list of products after adding them', async () => {
+      // Create a test product
       await Producto.create({
-        nombre: 'Producto de prueba',
-        descripcion: 'Esta es una descripción de prueba con suficiente longitud',
-        precio: 99.99,
-        cantidad_disponible: 10
+        name: 'Test Product',
+        description: 'This is a test description with sufficient length',
+        price: 99.99,
+        available_quantity: 10
       });
 
       const response = await request(app)
@@ -88,81 +88,81 @@ describe('Pruebas de API de Productos', () => {
   });
 
   describe('GET /api/productos/:id', () => {
-    it('Debería obtener un producto por ID', async () => {
-      // Crear un producto de prueba
-      const producto = await Producto.create({
-        nombre: 'Producto de prueba',
-        descripcion: 'Esta es una descripción de prueba con suficiente longitud',
-        precio: 99.99,
-        cantidad_disponible: 10
+    it('Should get a product by ID', async () => {
+      // Create a test product
+      const product = await Producto.create({
+        name: 'Test Product',
+        description: 'This is a test description with sufficient length',
+        price: 99.99,
+        available_quantity: 10
       });
 
       const response = await request(app)
-        .get(`/api/productos/${producto.id}`)
+        .get(`/api/productos/${product.id}`)
         .expect(200);
 
       expect(response.body.status).toBe('success');
-      expect(response.body.data.id).toBe(producto.id);
+      expect(response.body.data.id).toBe(product.id);
     });
 
-    it('Debería retornar 404 si el producto no existe', async () => {
+    it('Should return a 404 if the product does not exist', async () => {
       const response = await request(app)
         .get('/api/productos/9999')
         .expect(404);
 
       expect(response.body.status).toBe('error');
-      expect(response.body.message).toBe('Producto no encontrado');
+      expect(response.body.message).toBe('Product not found');
     });
   });
 
   describe('PUT /api/productos/:id', () => {
-    it('Debería actualizar un producto existente', async () => {
-      // Crear un producto de prueba
-      const producto = await Producto.create({
-        nombre: 'Producto inicial',
-        descripcion: 'Esta es una descripción inicial con suficiente longitud',
-        precio: 99.99,
-        cantidad_disponible: 10
+    it('Should update an existing product', async () => {
+      // Create a test product
+      const product = await Producto.create({
+        name: 'Initial Product',
+        description: 'This is an initial description with sufficient length',
+        price: 99.99,
+        available_quantity: 10
       });
 
-      const actualizacion = {
-        nombre: 'Producto actualizado',
-        precio: 149.99
+      const update = {
+        name: 'Updated Product',
+        price: 149.99
       };
 
       const response = await request(app)
-        .put(`/api/productos/${producto.id}`)
-        .send(actualizacion)
+        .put(`/api/productos/${product.id}`)
+        .send(update)
         .expect(200);
 
       expect(response.body.status).toBe('success');
-      expect(response.body.data.nombre).toBe(actualizacion.nombre);
-      expect(parseFloat(response.body.data.precio)).toBe(actualizacion.precio);
-      // La descripción no debería cambiar
-      expect(response.body.data.descripcion).toBe(producto.descripcion);
+      expect(response.body.data.name).toBe(update.name);
+      expect(parseFloat(response.body.data.price)).toBe(update.price);
+      // The description should not change
+      expect(response.body.data.description).toBe(product.description);
     });
   });
 
   describe('DELETE /api/productos/:id', () => {
-    it('Debería eliminar un producto existente', async () => {
-      // Crear un producto de prueba
-      const producto = await Producto.create({
-        nombre: 'Producto a eliminar',
-        descripcion: 'Esta es una descripción del producto a eliminar con suficiente longitud',
-        precio: 59.99,
-        cantidad_disponible: 5
+    it('Should delete an existing product', async () => {
+      // Create a test product
+      const product = await Producto.create({
+        name: 'Product to Delete',
+        description: 'This is a description of the product to delete with sufficient length',
+        price: 59.99,
+        available_quantity: 5
       });
 
       const response = await request(app)
-        .delete(`/api/productos/${producto.id}`)
+        .delete(`/api/productos/${product.id}`)
         .expect(200);
 
       expect(response.body.status).toBe('success');
-      expect(response.body.message).toBe('Producto eliminado exitosamente');
+      expect(response.body.message).toBe('Product deleted successfully');
 
-      // Verificar que el producto ya no exista
-      const productoEliminado = await Producto.findByPk(producto.id);
-      expect(productoEliminado).toBeNull();
+      // Verify that the product no longer exists
+      const deletedProduct = await Producto.findByPk(product.id);
+      expect(deletedProduct).toBeNull();
     });
   });
 });
