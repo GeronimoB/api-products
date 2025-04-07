@@ -41,10 +41,10 @@ describe('Product API Tests', () => {
 
     it('Should return a 400 error if data is invalid', async () => {
       const invalidProduct = {
-        name: 'P', // Too short name
-        description: 'Short', // Too short description
-        price: -10, // Negative price
-        available_quantity: 0 // Invalid quantity
+        name: 'P', 
+        description: 'Short',
+        price: -10, 
+        available_quantity: 0 
       };
 
       const response = await request(app)
