@@ -1,3 +1,5 @@
+📘 This project is also available in English: [README.en.md](README.en.md)
+
 # API REST de Productos
 
 Esta es una API REST desarrollada en Node.js con Express y PostgreSQL que permite realizar operaciones CRUD sobre un recurso llamado "productos".
